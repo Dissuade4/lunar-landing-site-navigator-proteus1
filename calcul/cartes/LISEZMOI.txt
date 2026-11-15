@@ -1,0 +1,5 @@
+Placer ici les cartes LOLA (.tif) :
+- Site23_final_adj_5mpp_surf.tif (Malapert)
+- Site20_final_adj_5mpp_surf.tif (Leibnitz beta)
+- LDEM_60S_240MPP_ADJ.TIF (Chandrayaan-3) : https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDEM_60S_240MPP_ADJ.TIF
+Elles ne sont pas versionnees (trop lourdes).

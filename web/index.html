@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lunar Landing Site Navigator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Police chargée sans bloquer l'affichage : sans internet, la page s'affiche avec la police système. -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <!-- ?v=... : changer ce numéro après une modification du code force le navigateur à recharger les fichiers. -->
+  <link rel="stylesheet" href="css/style.css?v=20261115i">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+</head>
+<body>
+
+<header class="entete">
+  <a class="logo" href="#accueil">
+    <img src="img/logo.png" width="28" height="28" alt="">
+    <span>Lunar Landing Site Navigator</span>
+  </a>
+
+  <nav class="onglets" id="onglets-mission" aria-label="Vues du mode Mission" hidden>
+    <a href="#mission/selection" data-onglet="selection">1. Sites et dates</a>
+    <a href="#mission/detail" data-onglet="detail">2. Détail</a>
+    <a href="#mission/comparaison" data-onglet="comparaison">3. Comparaison</a>
+    <a href="#mission/calendrier" data-onglet="calendrier">4. Calendrier</a>
+    <a href="#mission/periode" data-onglet="periode">5. Période</a>
+  </nav>
+
+  <nav class="choix-mode" id="choix-mode" aria-label="Mode" hidden>
+    <a href="#decouverte/1" data-mode="decouverte">Découverte</a>
+    <a href="#mission/selection" data-mode="mission">Mission</a>
+  </nav>
+
+  <button type="button" class="bouton secondaire petit" id="copier-lien" hidden>Copier le lien du scénario</button>
+  <button type="button" class="bouton secondaire petit bouton-langue" id="langue" aria-label="Changer de langue" title="Changer de langue">EN</button>
+
+  <span class="mention" id="mention-challenge">NASA Space Apps Challenge 2026</span>
+</header>
+
+<main>
+
+  <!-- ========== Accueil ========== -->
+  <section id="vue-accueil" class="vue accueil">
+    <div class="accueil-titre">
+      <h1>Où poser une mission au pôle Sud de la Lune, et quand ?</h1>
+      <p>Pour chaque site et chaque date, deux questions : le Soleil est-il au-dessus du relief pour produire de l'énergie, et la Terre est-elle visible pour communiquer ?</p>
+    </div>
+    <svg id="accueil-horizon" class="accueil-horizon" role="img" aria-label="Horizon lunaire avec le Soleil rasant et la Terre"></svg>
+    <div class="accueil-cartes">
+      <a class="carte-mode" href="#decouverte/1">
+        <span class="surtitre orange">Mode Découverte</span>
+        <span class="carte-mode-titre">Comprendre pourquoi le pôle Sud est si difficile</span>
+        <span class="carte-mode-texte">Un parcours guidé en 4 étapes : le Soleil rasant, le relief qui le cache, la Terre qui apparaît et disparaît, puis le rejeu de la mission IM-1.</span>
+        <span class="carte-mode-public">Élèves, enseignants, grand public · environ 5 min</span>
+        <span class="bouton orange">Commencer le parcours</span>
+      </a>
+      <a class="carte-mode" href="#mission/selection">
+        <span class="surtitre bleu">Mode Mission</span>
+        <span class="carte-mode-titre">Évaluer et comparer des sites d'alunissage</span>
+        <span class="carte-mode-texte">Choisissez des sites et des dates, réglez vos seuils d'énergie et de communication, et voyez ce que change un report de N jours.</span>
+        <span class="carte-mode-public">Planificateurs de mission</span>
+        <span class="bouton bleu">Ouvrir le planificateur</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ========== Découverte ========== -->
+  <section id="vue-decouverte" class="vue" hidden>
+    <ol class="etapes" id="dec-etapes" aria-label="Étapes du parcours"></ol>
+    <div class="decouverte">
+      <section class="panneau">
+        <div class="choix-missions" id="dec-missions" hidden></div>
+        <div class="panneau-tete">
+          <h2 id="dec-titre-visuel"></h2>
+          <span class="badge-exemple" id="dec-badge" hidden>Valeurs d'exemple</span>
+        </div>
+        <svg id="dec-svg" class="graphique" role="img"></svg>
+        <div class="legende" id="dec-legende"></div>
+        <div class="lecture">
+          <button type="button" class="bouton-lecture orange" id="dec-lecture" aria-label="Lecture"></button>
+          <label for="dec-curseur" id="dec-curseur-texte"></label>
+          <input id="dec-curseur" type="range">
+          <button type="button" class="bouton-son" id="dec-son" aria-pressed="false">Son coupé</button>
+        </div>
+      </section>
+      <section class="panneau paris" id="dec-paris" hidden>
+        <div class="panneau-tete">
+          <h2>Le même jour, vu depuis Paris</h2>
+          <span class="badge-exemple">Position du Soleil approchée</span>
+        </div>
+        <svg id="paris-svg" class="graphique" role="img" aria-label="Course du Soleil sur une journée à Paris et au pôle Sud lunaire, à la même échelle"></svg>
+        <p id="paris-texte" class="note"></p>
+      </section>
+      <aside class="decouverte-texte">
+        <div class="panneau">
+          <span class="surtitre orange" id="dec-numero"></span>
+          <h1 id="dec-titre"></h1>
+          <div id="dec-paragraphes"></div>
+        </div>
+        <div class="panneau" id="dec-essai">
+          <span class="petit-titre">À essayer</span>
+          <span id="dec-essai-texte"></span>
+          <label class="case" id="dec-case-relief"><input type="checkbox" id="dec-relief" checked> Afficher le relief</label>
+        </div>
+        <div class="panneau im1" id="dec-im1" hidden>
+          <div><span class="petit-titre">Coucher prédit par l'outil</span><strong id="im1-predit"></strong></div>
+          <div><span class="petit-titre" id="im1-observe-titre">Dernier contact observé</span><strong id="im1-observe"></strong></div>
+        </div>
+        <div class="navigation-etapes">
+          <a class="bouton secondaire" id="dec-precedent">Précédent</a>
+          <a class="bouton orange" id="dec-suivant">Étape suivante</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ========== Mission : sites et dates ========== -->
+  <section id="vue-selection" class="vue" hidden>
+    <div class="selection">
+      <section class="panneau">
+        <h2>Sites</h2>
+        <input id="recherche" type="search" placeholder="Rechercher un site" aria-label="Rechercher un site">
+        <div id="liste-sites" class="liste-sites"></div>
+      </section>
+
+      <section class="panneau">
+        <div class="panneau-tete">
+          <h2>Carte polaire · 80° S à 90° S</h2>
+        </div>
+        <svg id="carte" class="carte" role="img" aria-label="Carte du pôle Sud avec les sites"></svg>
+        <div class="legende">
+          <span><i class="pastille" style="background:#4C9AFF"></i>Sélectionné</span>
+          <span><i class="pastille vide"></i>Disponible</span>
+          <span>Cliquez un site pour le sélectionner</span>
+        </div>
+      </section>
+
+      <section class="panneau">
+        <h2>Dates</h2>
+        <p class="note">Date d'alunissage : <strong id="selection-date"></strong>. Elle se change dans l'onglet <a href="#mission/detail">2. Détail</a>.</p>
+        <label class="champ">Durée de la mission
+          <select id="duree">
+            <option value="7">7 jours</option>
+            <option value="10">10 jours</option>
+            <option value="14">14 jours (≈ un jour lunaire)</option>
+          </select>
+        </label>
+        <fieldset class="champ">
+          <legend>Dates alternatives à tester</legend>
+          <div id="decalages" class="decalages"></div>
+          <div class="ajout-decalage">
+            <input type="number" id="nouveau-decalage" min="1" max="120" placeholder="jours" aria-label="Nombre de jours de report">
+            <button type="button" id="ajouter-decalage">+ Ajouter</button>
+          </div>
+        </fieldset>
+        <div class="resume-scenarios">
+          <span id="nb-scenarios"></span>
+          <a class="bouton bleu" href="#mission/comparaison">Comparer les scénarios</a>
+          <a class="bouton secondaire" href="#mission/detail">Voir le détail d'un site</a>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ========== Mission : détail d'un site ========== -->
+  <section id="vue-detail" class="vue" hidden>
+    <div class="detail-tete">
+      <label class="champ" id="detail-site-champ">Site
+        <select id="detail-site" class="grand-select"></select>
+      </label>
+      <h2 class="cote-titre" id="cote-titre" hidden>Deux sites, la même mission</h2>
+      <div class="segmente" role="group" aria-label="Affichage du détail">
+        <button type="button" id="mode-un" aria-pressed="true">Un site</button>
+        <button type="button" id="mode-cote" aria-pressed="false">Côte à côte</button>
+      </div>
+      <div class="detail-date">
+        <span class="badge-exemple" id="detail-badge" hidden>Valeurs d'exemple</span>
+        <span id="detail-date"></span>
+      </div>
+    </div>
+    <div class="detail-alunissage">
+      <label class="champ">Date d'alunissage
+        <input type="date" id="date-debut">
+      </label>
+      <p class="note" id="plage-donnees" aria-live="polite"></p>
+    </div>
+
+    <div id="detail-un">
+    <div class="indicateurs">
+      <div class="indicateur"><span>Élévation du Soleil</span><strong id="ind-soleil-el" class="txt-soleil"></strong><small id="ind-soleil-el-note"></small></div>
+      <div class="indicateur fort-soleil"><span id="ind-soleil-cd-titre"></span><strong id="ind-soleil-cd" class="txt-soleil"></strong><small>derrière le relief</small></div>
+      <div class="indicateur"><span>Élévation de la Terre</span><strong id="ind-terre-el" class="txt-terre"></strong><small id="ind-terre-el-note"></small></div>
+      <div class="indicateur fort-terre"><span id="ind-terre-cd-titre"></span><strong id="ind-terre-cd" class="txt-terre"></strong><small id="ind-terre-cd-note"></small></div>
+    </div>
+
+    <section class="panneau">
+      <div class="panneau-tete">
+        <h2>Panorama d'horizon à 360°</h2>
+        <div class="legende">
+          <span><i class="pastille" style="background:#F5A524"></i>Soleil (3 prochains jours en pointillés)</span>
+          <span><i class="pastille" style="background:#4C9AFF"></i>Terre</span>
+          <span><i class="carre-relief"></i>Relief LOLA</span>
+        </div>
+      </div>
+      <svg id="detail-panorama" class="graphique" role="img" aria-label="Panorama de l'horizon avec le Soleil et la Terre"></svg>
+    </section>
+
+    <section class="panneau">
+      <div class="panneau-tete">
+        <h2>Dôme du ciel en 3D</h2>
+        <div class="boutons-dome">
+          <button type="button" class="bouton petit secondaire" id="dome-soleil">Face au Soleil</button>
+          <button type="button" class="bouton petit secondaire" id="dome-terre">Face à la Terre</button>
+        </div>
+      </div>
+      <canvas id="detail-dome" class="dome" tabindex="0" role="img" aria-label="Vue en trois dimensions : la couronne du relief autour du site, avec le Soleil, la Terre et leurs trajets pendant la mission. Flèches du clavier pour tourner."></canvas>
+      <p class="note" id="detail-dome-note"></p>
+    </section>
+
+    <section class="panneau">
+      <div class="panneau-tete">
+        <h2 id="frise-titre"></h2>
+        <div class="chiffres-frise" id="frise-chiffres"></div>
+      </div>
+      <div class="frise" id="frise"></div>
+      <label class="case bleue"><input type="checkbox" id="comparer-plat"> Comparer avec un sol plat (sans relief)</label>
+      <p class="encart-plat" id="texte-plat" hidden></p>
+      <div class="lecture">
+        <button type="button" class="bouton-lecture bleu" id="detail-lecture" aria-label="Lecture"></button>
+        <label for="detail-curseur" id="detail-curseur-texte"></label>
+        <input id="detail-curseur" type="range" min="0" step="1" value="0">
+        <button type="button" class="bouton-son" id="detail-son" aria-pressed="false">Son coupé</button>
+      </div>
+    </section>
+    </div>
+
+    <!-- Comparaison côte à côte : deux sites, même date, même durée, mêmes critères -->
+    <div id="detail-cote" hidden>
+      <div class="cote-grille">
+        <section class="panneau cote-colonne" data-colonne="a" aria-label="Site A"></section>
+        <section class="panneau cote-colonne" data-colonne="b" aria-label="Site B"></section>
+      </div>
+      <section class="panneau">
+        <div class="lecture">
+          <label for="cote-curseur" id="cote-curseur-texte"></label>
+          <input id="cote-curseur" type="range" min="0" step="1" value="0">
+        </div>
+      </section>
+      <section class="panneau">
+        <h2>Compromis à cette date</h2>
+        <div class="defile"><table class="compromis" id="cote-compromis"></table></div>
+        <p class="note" id="cote-resume"></p>
+      </section>
+    </div>
+  </section>
+
+  <!-- ========== Mission : zoom sur une période ========== -->
+  <section id="vue-periode" class="vue" hidden>
+    <div class="periode-tete">
+      <h2 class="cote-titre">Zoom sur une période</h2>
+      <p class="note">Choisissez une fenêtre dans les données déjà calculées : rien n'est recalculé, l'affichage est instantané. Sites affichés : ceux cochés dans « Sites et dates ».</p>
+    </div>
+
+    <section class="panneau">
+      <div class="panneau-tete">
+        <h2 id="periode-titre-annee"></h2>
+        <label class="champ ligne">Année
+          <select id="periode-annee"></select>
+        </label>
+      </div>
+      <div class="bandes-annee" id="periode-bandes"></div>
+      <div class="bandes-annee">
+        <span></span>
+        <div class="double-curseur">
+          <div class="piste"></div><div class="plage" id="periode-plage"></div>
+          <input type="range" id="periode-curseur-de" min="0" step="1" aria-label="Début de la période">
+          <input type="range" id="periode-curseur-a" min="0" step="1" aria-label="Fin de la période">
+        </div>
+        <span></span>
+        <div class="mois-annee"><span>janv.</span><span>mars</span><span>mai</span><span>juil.</span><span>sept.</span><span>nov.</span><span>déc.</span></div>
+      </div>
+      <div class="periode-choix">
+        <label class="champ">Du <input type="date" id="periode-de"></label>
+        <label class="champ">Au <input type="date" id="periode-a"></label>
+        <div class="puces-largeur" role="group" aria-label="Largeurs rapides" id="periode-largeurs">
+          <button type="button" data-largeur="mission">Mission</button>
+          <button type="button" data-largeur="20">20 jours</button>
+          <button type="button" data-largeur="29.5">Mois lunaire (29,5 j)</button>
+          <button type="button" data-largeur="annee">Année</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panneau">
+      <div class="panneau-tete">
+        <h2 id="periode-titre-graphique"></h2>
+        <div class="legende" id="periode-legende"></div>
+      </div>
+      <svg id="periode-graphique" class="graphique" role="img" aria-label="Hauteur du Soleil au-dessus du relief sur la période"></svg>
+      <div class="frise" id="periode-terre"></div>
+    </section>
+
+    <section class="panneau">
+      <h2 id="periode-titre-bilan"></h2>
+      <div class="defile"><table class="compromis" id="periode-bilan"></table></div>
+    </section>
+  </section>
+
+  <!-- ========== Mission : comparaison ========== -->
+  <section id="vue-comparaison" class="vue" hidden>
+    <div class="comparaison">
+      <aside class="panneau criteres">
+        <h2>Critères de la mission</h2>
+        <label class="critere"><span>Ensoleillement minimal <strong id="val-soleil-min"></strong></span><input type="range" id="crit-soleil-min" min="0" max="100" step="1"></label>
+        <label class="critere"><span>Visibilité Terre minimale <strong id="val-terre-min"></strong></span><input type="range" id="crit-terre-min" min="0" max="100" step="1"></label>
+        <label class="critere"><span>Plus longue nuit tolérée <strong id="val-nuit-max"></strong></span><input type="range" id="crit-nuit-max" min="0" max="240" step="6"></label>
+        <label class="critere"><span>Élévation solaire minimale <strong id="val-elev-min"></strong></span><input type="range" id="crit-elev-min" min="0" max="10" step="0.5"></label>
+        <p class="note">La nuit tolérée correspond à l'autonomie des batteries. Chaque case se recalcule quand vous modifiez un critère.</p>
+        <div class="legende-statuts">
+          <span class="petit-titre">Légende</span>
+          <span><b class="statut viable">Viable</b> tous les critères remplis</span>
+          <span><b class="statut limite">Limite</b> au moins un critère manqué</span>
+          <span><b class="statut exclu">Exclu</b> nuit trop longue ou Terre jamais visible</span>
+        </div>
+      </aside>
+
+      <section class="panneau">
+        <div class="panneau-tete">
+          <h2>Et si la mission glisse ?</h2>
+          <span class="badge-exemple" id="comp-badge" hidden>Valeurs d'exemple</span>
+        </div>
+        <label for="report" class="report-texte" id="report-texte"></label>
+        <input id="report" type="range" min="0" max="60" step="1">
+        <div class="tableau-defilant">
+          <table class="matrice" id="matrice"></table>
+        </div>
+        <p class="note">Chiffre affiché : la plus longue nuit pendant la mission. Survolez une case pour le détail.</p>
+        <div class="conclusion">
+          <div>
+            <span class="surtitre bleu" id="conclusion-titre"></span>
+            <span id="conclusion-texte"></span>
+          </div>
+          <a class="bouton bleu" id="conclusion-bouton" href="#mission/detail"></a>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ========== Mission : calendrier ========== -->
+  <section id="vue-calendrier" class="vue" hidden>
+    <section class="panneau">
+      <div class="panneau-tete">
+        <h2>Calendrier de faisabilité</h2>
+        <span class="badge-exemple" id="cal-badge" hidden>Valeurs d'exemple</span>
+      </div>
+      <p class="note" id="cal-intro"></p>
+      <div class="tableau-defilant">
+        <div class="calendrier" id="calendrier"></div>
+      </div>
+      <div class="legende">
+        <span><b class="statut viable">Viable</b></span>
+        <span><b class="statut limite">Limite</b></span>
+        <span><b class="statut exclu">Exclu</b></span>
+        <span>Une case = une date d'alunissage. Cliquez une case pour ouvrir le détail. Les critères sont ceux de l'écran Comparaison.</span>
+      </div>
+      <p class="conclusion-cal" id="cal-resume"></p>
+    </section>
+  </section>
+
+</main>
+
+<footer class="pied" id="pied"></footer>
+
+<script src="js/i18n.js?v=20261115i"></script>
+<script src="js/donnees.js?v=20261115i"></script>
+<script src="js/calculs.js?v=20261115i"></script>
+<script src="js/dessins.js?v=20261115i"></script>
+<script src="js/dome.js?v=20261115i"></script>
+<script src="js/app.js?v=20261115i"></script>
+</body>
+</html>

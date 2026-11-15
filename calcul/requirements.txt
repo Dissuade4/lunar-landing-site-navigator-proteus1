@@ -1,0 +1,8 @@
+numpy
+pandas
+rasterio
+pyproj
+astroquery
+matplotlib
+streamlit
+plotly

@@ -1,0 +1,9 @@
+# Cartes LOLA : trop lourdes pour GitHub (à télécharger, voir README)
+calcul/cartes/*.tif
+calcul/cartes/*.TIF
+calcul/cartes/*.tiff
+
+# Environnement Python
+venv/
+__pycache__/
+*.pyc
