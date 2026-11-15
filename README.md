@@ -143,6 +143,14 @@ Les sites comparés doivent être calculés sur les mêmes années.
 
 Les données ne sont pas recalculées en ligne : lancer `python calcul/exporter_web.py` et envoyer `web/data/` avec le reste.
 
+## Équipe
+
+| Membre | GitHub |
+| --- | --- |
+| Mathieu Girault | [@Mat-777777](https://github.com/Mat-777777) |
+| Sara Graine | [@saragraine](https://github.com/saragraine) |
+| Quentin Courtois | [@Dissuade4](https://github.com/Dissuade4) |
+
 ## Crédits
 
 - Relief : NASA Goddard, Planetary Geodesy Data Archive (LOLA, produits 78 et 90).
